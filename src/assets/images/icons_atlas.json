@@ -976,7 +976,7 @@
             }
         },
         {
-            "filename": "buttons32x32_75",
+            "filename": "yes",
             "frame": {
                 "x": 96,
                 "y": 288,
@@ -989,7 +989,7 @@
             }
         },
         {
-            "filename": "buttons32x32_76",
+            "filename": "no",
             "frame": {
                 "x": 128,
                 "y": 288,
@@ -1002,7 +1002,7 @@
             }
         },
         {
-            "filename": "buttons32x32_77",
+            "filename": "fullscreen_right",
             "frame": {
                 "x": 160,
                 "y": 288,
@@ -1262,7 +1262,7 @@
             }
         },
         {
-            "filename": "fullscreen",
+            "filename": "fullscreen_left",
             "frame": {
                 "x": 32,
                 "y": 384,
