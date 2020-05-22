@@ -1,12 +1,13 @@
 // import images to notify webpack that we want these
-import bombImg from "../assets/bomb.png";
-import dudeImg from "../assets/dude.png";
-import platformImg from "../assets/platform.png";
-import skyImg from "../assets/sky.png";
-import starImg from "../assets/star.png";
-import buttons32x32Img from "../assets/buttons32x32.png";
-import SmallButtons from "../config/SmallButtons";
-import clickSound from "../assets/click.mp3";
+import bombImg from "../assets/images/bomb.png";
+import dudeImg from "../assets//images/dude.png";
+import platformImg from "../assets/images/platform.png";
+import skyImg from "../assets/images/sky.png";
+import starImg from "../assets/images/star.png";
+import iconsImg from "../assets/images/icons.png";
+import iconsAtlas from "../assets/images/icons_atlas.json";
+import clickSound from "../assets/audio/click.mp3";
+import GameOptions from "../config/GameOptions";
 
 /**
  * Preloader
@@ -22,10 +23,16 @@ class PreloadScreen extends Phaser.Scene {
   preload() {
     this.load.image('sky', skyImg);
     // progress bar
+    this.progressBoxArea = new Phaser.Geom.Rectangle(
+      GameOptions.viewport.width*0.25, 
+      GameOptions.viewport.height*0.33, 
+      GameOptions.viewport.width*0.5, 
+      50
+    );
     this.progressBar = this.add.graphics();
     this.progressBox = this.add.graphics();
     this.progressBox.fillStyle(0x222222, 0.8);
-    this.progressBox.fillRect(240, 270, 320, 50);
+    this.progressBox.fillRectShape(this.progressBoxArea);
     var width = this.cameras.main.width;
     var height = this.cameras.main.height;
     this.loadingText = this.make.text({
@@ -58,7 +65,7 @@ class PreloadScreen extends Phaser.Scene {
     this.load.image('star', starImg);
     this.load.spritesheet('dude', dudeImg, { frameWidth: 32, frameHeight: 48 });
     // buttons
-    this.load.spritesheet(SmallButtons.texture, buttons32x32Img, { frameWidth: SmallButtons.frameWidth, frameHeight: SmallButtons.frameHeight });
+    this.load.atlas("icons", iconsImg, iconsAtlas);
     // sounds
     this.load.audio("click", clickSound);
   }
@@ -77,7 +84,12 @@ class PreloadScreen extends Phaser.Scene {
     this.percentText.setText(parseInt(value * 100) + '%');
     this.progressBar.clear();
     this.progressBar.fillStyle(0xffffff, 1);
-    this.progressBar.fillRect(250, 280, 300 * value, 30);
+    this.progressBar.fillRect(
+      this.progressBoxArea.x+10, 
+      this.progressBoxArea.y+10, 
+      (this.progressBoxArea.width-20) * value, 
+      this.progressBoxArea.height-20
+    );
   }
 
   /**

@@ -8,6 +8,13 @@ import SmallButtons from "../config/SmallButtons";
 class PlayScreen extends Phaser.Scene {
   constructor() {
     super("PlayScreen");
+    // setup gui area (gui objects are created out of view for the game, then gui camera scrolls to render them)
+    this.guiArea = { 
+      x: -GameOptions.viewport.width, 
+      y: 0, 
+      width: GameOptions.viewport.width, 
+      height: GameOptions.viewport.height 
+    };
     // game state
     this.score = 0;
     this.gameOver = false;
@@ -17,8 +24,19 @@ class PlayScreen extends Phaser.Scene {
    * Show the screen
    */
   create() {
-    // background
-    this.add.image(400, 300, 'sky');
+    // setup cameras
+    this.guiCamera = this.cameras.add(0, 0, GameOptions.viewport.width, GameOptions.viewport.height, false);
+    this.guiCamera.setScroll(this.guiArea.x, this.guiArea.y);
+    this.gameCamera = this.cameras.add(0, 0, GameOptions.viewport.width, GameOptions.viewport.height, true);
+
+    // gui
+    this.gui = this.add.container(this.guiArea.x, this.guiArea.y);
+    const bg = this.add.image(0, 0, 'sky').setOrigin(0, 0);
+    this.scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+    const fullscreenButton = new ButtonSprite(this, SmallButtons.fullscreen, 765, 25, this.onFullscreenButton, this);
+    const muteButton = new ButtonSprite(this, SmallButtons.mute, 715, 25, this.onMuteButton, this);
+
+    this.gui.add([bg, this.scoreText, fullscreenButton, muteButton]);
 
     // platforms
     this.platforms = this.physics.add.staticGroup();
@@ -56,13 +74,10 @@ class PlayScreen extends Phaser.Scene {
     this.physics.add.collider(this.player, this.platforms);
     this.physics.add.collider(this.stars, this.platforms);
     this.physics.add.collider(this.bombs, this.platforms);
+
     // callback collisions
     this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
     this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
-  
-    // gui
-    this.scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
-    let fullscreenButton = new ButtonSprite({scene: this, x: 765, y: 25, texture: SmallButtons.texture, callback: this.onFullscreenButton, context: this, frameUp: SmallButtons.fullscreen, frameOver: SmallButtons.fullscreenActive, frameDown: SmallButtons.fullscreenActive});
   }
 
   /**
@@ -125,14 +140,27 @@ class PlayScreen extends Phaser.Scene {
    * Toggle fullscreen
    */
   onFullscreenButton() {
-    if (GameOptions.playSound) {
-      this.sound.play('click');
-    }
+    GameOptions.playSound(this, "click");
     if (!this.scale.isFullscreen) {
       this.scale.startFullscreen();
     } else {
       this.scale.stopFullscreen();
     }
+  }
+
+  /**
+   * Toggle audio mute/unmute
+   */
+  onMuteButton() {
+    GameOptions.isMuted = !GameOptions.isMuted;
+    if (this.music) {
+      if (GameOptions.isMuted) {
+        this.music.pause();
+      } else {
+        this.music.play();
+      }
+    }
+    GameOptions.playSound(this, "click");
   }
 }
 

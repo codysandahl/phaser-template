@@ -2,11 +2,8 @@
  * Frame atlas
  */
 const SmallButtons = {
-  texture: "SmallButtons",
-  frameWidth: 32,
-  frameHeight: 32,
-  fullscreen: 97,
-  fullscreenActive: 97, // NOTE: make a different active/over image if desired
+  fullscreen: { texture: "icons", frameUp: "fullscreen" },
+  mute: { texture: "icons", frameUp: "mute" },
 };
 
 export default SmallButtons;

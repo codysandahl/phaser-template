@@ -29,6 +29,6 @@ const config = {
  * NOTE: contain within onload() to make sure the game loads after everything else is finished
  */
 let game;
-window.onload = function() {
+$(window).on('load', function() {
   game = new Phaser.Game(config);
-}
+});
